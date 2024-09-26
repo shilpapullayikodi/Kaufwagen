@@ -1,6 +1,6 @@
 # Kaufwagen
 
-This application is for creating grocery shopping list before going for shopping
+This application is for managing grocery shopping list while going for shopping
 
 ## Tasks
 
