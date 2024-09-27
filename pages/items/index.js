@@ -1,4 +1,4 @@
-import dbConnect from "../../../db/connect";
+import dbConnect from "@/db/connect";
 import Item from "@/db/models/Item";
 
 export default async function handler(request, response) {
