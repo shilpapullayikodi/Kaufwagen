@@ -9,11 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@iconify/react": "^5.0.2",
+    "mongoose": "^8.6.3",
+    "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.13"
+    "styled-components": "^6.1.13",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
+    "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^8",
     "eslint-config-next": "14.2.13"
   }
