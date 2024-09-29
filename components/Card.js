@@ -9,6 +9,7 @@ const Article = styled.article`
 const Figure = styled.figure`
   position: relative;
   margin: 0;
+  background-color: #a6b37d;
 `;
 
 const ImageContainer = styled.div`
@@ -25,6 +26,7 @@ const StyledImage = styled.img`
   height: auto;
   max-height: 100%;
   max-width: 100%; //prevent overflow
+  background-color: #a6b37d;
 `;
 export default function Card({ id, name, image }) {
   return (
