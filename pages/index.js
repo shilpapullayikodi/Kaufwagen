@@ -4,17 +4,18 @@ import Card from "@/components/Card";
 
 const List = styled.ul`
   list-style: none;
-  display: flex;
-  flex-direction: row; /* Changed to row */
-  align-items: center;
-  gap: 0.5rem;
+  display: grid;
+  gap: 1rem;
   padding-left: 0;
-  flex-wrap: wrap;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(150px, 1fr)
+  ); //dynamically change the no.of columns
 `;
-
 const ListItem = styled.li`
   position: relative;
-  width: 30%;
+  display: flex;
+  justify-content: center;
 `;
 
 export default function Home() {
