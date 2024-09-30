@@ -10,6 +10,10 @@ const Figure = styled.figure`
   position: relative;
   margin: 0;
   background-color: #a6b37d;
+
+  &.isSelected {
+    background-color: #ed9898;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -27,14 +31,24 @@ const StyledImage = styled.img`
   max-height: 100%;
   max-width: 100%; //prevent overflow
   background-color: #a6b37d;
+
+  &.isSelected {
+    background-color: #ed9898;
+  }
 `;
-export default function Card({ id, name, image }) {
+
+const Button = styled.button``;
+export default function Card({ id, name, image, onClick, isSelected }) {
   return (
     <>
-      <Article>
-        <Figure>
+      <Article onClick={() => onClick(id)}>
+        <Figure className={isSelected ? "isSelected" : ""}>
           <ImageContainer>
-            <StyledImage src={image} alt={name} />
+            <StyledImage
+              src={image}
+              alt={name}
+              className={isSelected ? "isSelected" : ""}
+            />
           </ImageContainer>
           <figcaption>{name}</figcaption>
         </Figure>
