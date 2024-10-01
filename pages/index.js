@@ -1,7 +1,6 @@
 import useSWR from "swr";
 import styled from "styled-components";
 import Card from "@/components/Card";
-import { useState } from "react";
 
 const List = styled.ul`
   list-style: none;
@@ -10,7 +9,7 @@ const List = styled.ul`
   padding-left: 0;
   grid-template-columns: repeat(
     auto-fit,
-    minmax(150px, 1fr)
+    minmax(100px, 1fr)
   ); //dynamically change the no.of columns
 `;
 const ListItem = styled.li`
@@ -20,42 +19,33 @@ const ListItem = styled.li`
 `;
 
 export default function Home() {
-  const [selectedItems, setSelectedItems] = useState([]);
+  //const [selectedItems, setSelectedItems] = useState([]); // To be replaced with api call to get list of all selected Item
 
   const { data, error } = useSWR("/api/items");
+  const {
+    data1,
+    error: selectedItemsError,
+    mutate,
+  } = useSWR("/api/items/selectedItem");
 
   if (!data && !error) {
     return <h1>Loading...</h1>;
   }
-  if (!data) {
-    return null;
-  }
+  if (error || selectedItemsError) return <h1>Error loading items</h1>;
 
-  function toggleFavourite(id) {
-    console.log("called" + id);
-    //before adding find which all items selected check selectedItems array
-    const result = selectedItems.find((item) => item.id === id);
-
-    //  item is not present return undefined
-    if (result) {
-      // remove from selectedItems
-      setSelectedItems((prevSelectedItems) =>
-        prevSelectedItems.filter((item) => item.id !== id)
-      );
-    }
-    if (result === undefined) {
-      // add item (id) to the selectedItems array
-      const newSelectedItems = { id: id };
-      //creating a new array
-      setSelectedItems((prevSelectedItems) => [
-        ...prevSelectedItems,
-        newSelectedItems,
-      ]);
+  async function toggleFavourite(id) {
+    const response = await fetch("/api/items/selectedItem", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(id),
+    });
+    if (response.ok) {
+      await mutate();
     }
   }
-  //filter from data in db that if id in the selcted item is available in db, only filter those)
+  //filter from data if id of the selcteditem is available in db, only filter those items)
   const filteredItems = data.filter((item) =>
-    selectedItems.find((selectedItem) => selectedItem.id == item._id)
+    data1?.some((selectedItem) => selectedItem.item.id === item._id)
   );
 
   console.log(filteredItems);
@@ -90,7 +80,7 @@ export default function Home() {
                 name={item.name}
                 image={item.image}
                 onClick={toggleFavourite}
-                isSelected={filteredItems.find(
+                isSelected={filteredItems.some(
                   (filteredItem) => filteredItem._id == item._id
                 )}
               />

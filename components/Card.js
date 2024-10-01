@@ -37,7 +37,6 @@ const StyledImage = styled.img`
   }
 `;
 
-const Button = styled.button``;
 export default function Card({ id, name, image, onClick, isSelected }) {
   return (
     <>
