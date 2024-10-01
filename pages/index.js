@@ -22,40 +22,36 @@ const ListItem = styled.li`
 export default function Home() {
   //const [selectedItems, setSelectedItems] = useState([]); // To be replaced with api call to get list of all selected Item
 
-  const { data, error } = useSWR("/api/items");
-  const {
-    newData,
-    error: selectedItemsError,
-    mutate,
-  } = useSWR("/api/items/selectedItem");
+  const { data, error, mutate: mutateItems } = useSWR("/api/items");
 
   if (!data && !error) {
     return <h1>Loading...</h1>;
   }
-  if (error || selectedItemsError) return <h1>Error loading items</h1>;
+  if (error) return <h1>Error loading items</h1>;
+  //separating items and selected items into different variable
+  const { items = [], selectedItems = [] } = data;
 
   async function toggleFavourite(id) {
-    const response = await fetch("/api/items/selectedItem", {
+    const response = await fetch("/api/items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(id),
     });
+
     if (response.ok) {
-      await mutate(); // Update the cache for selected items
+      await response.json();
+      // Re-fetch the data after successful POST request
+      mutateItems(); // This will trigger a re-fetch of the data from "/api/items"
+    } else {
+      console.error("Failed to toggle favourite");
     }
   }
-  //filter from data if id of the selcteditem is available in db, only filter those items)
-  const filteredItems = data.filter((item) =>
-    newData?.find((selectedItem) => selectedItem.item === item._id)
-  );
-
-  console.log(filteredItems);
 
   return (
     <>
       <div>
         <List>
-          {filteredItems.map((item) => {
+          {selectedItems.map((item) => {
             return (
               <ListItem key={item._id}>
                 <Card
@@ -73,7 +69,7 @@ export default function Home() {
       <hr />
 
       <List>
-        {data.map((item) => {
+        {items.map((item) => {
           return (
             <ListItem key={item._id}>
               <Card
@@ -81,8 +77,8 @@ export default function Home() {
                 name={item.name}
                 image={item.image}
                 onClick={toggleFavourite}
-                isSelected={filteredItems.find(
-                  (filteredItem) => filteredItem._id == item._id
+                isSelected={selectedItems.find(
+                  (selectedItem) => selectedItem._id == item._id
                 )}
               />
             </ListItem>
