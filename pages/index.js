@@ -57,7 +57,11 @@ export default function Home() {
   const [loading, setLoading] = useState(false); // Add loading state
 
   if (!data && !error) {
-    return <h1>Loading...</h1>;
+    return (
+      <Overlay>
+        <Loader />
+      </Overlay>
+    );
   }
   if (error) return <h1>Error loading items</h1>;
   //separating items and selected items into different variable
