@@ -5,7 +5,7 @@ import Card from "@/components/Card";
 const List = styled.ul`
   list-style: none;
   display: grid;
-  gap: 1rem;
+  gap: 10px; //1rem
   padding-left: 0;
   grid-template-columns: repeat(
     auto-fit,
@@ -16,6 +16,7 @@ const ListItem = styled.li`
   position: relative;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 `;
 
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
 
   const { data, error } = useSWR("/api/items");
   const {
-    data1,
+    newData,
     error: selectedItemsError,
     mutate,
   } = useSWR("/api/items/selectedItem");
@@ -40,12 +41,12 @@ export default function Home() {
       body: JSON.stringify(id),
     });
     if (response.ok) {
-      await mutate();
+      await mutate(); // Update the cache for selected items
     }
   }
   //filter from data if id of the selcteditem is available in db, only filter those items)
   const filteredItems = data.filter((item) =>
-    data1?.some((selectedItem) => selectedItem.item.id === item._id)
+    newData?.find((selectedItem) => selectedItem.item === item._id)
   );
 
   console.log(filteredItems);
@@ -80,7 +81,7 @@ export default function Home() {
                 name={item.name}
                 image={item.image}
                 onClick={toggleFavourite}
-                isSelected={filteredItems.some(
+                isSelected={filteredItems.find(
                   (filteredItem) => filteredItem._id == item._id
                 )}
               />

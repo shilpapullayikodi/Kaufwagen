@@ -16,9 +16,6 @@ export default async function handler(request, response) {
         await SelectedItem.create({ item: itemId });
         response.status(201).json({ status: "item added." });
       }
-
-      //   const si = await SelectedItem.find().populate("item");
-      //   console.log("selected from database", si);
     } catch (error) {
       response.status(400).json({ error: error.message });
     }
