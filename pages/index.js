@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import styled from "styled-components";
 import Card from "@/components/Card";
+import { useState } from "react";
 
 const List = styled.ul`
   list-style: none;
@@ -19,10 +20,41 @@ const ListItem = styled.li`
   cursor: pointer;
 `;
 
+// Full-screen overlay for loading spinner
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Make sure it covers the entire UI */
+`;
+
+// Loader spinner
+const Loader = styled.div`
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #09f;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 export default function Home() {
   //const [selectedItems, setSelectedItems] = useState([]); // To be replaced with api call to get list of all selected Item
 
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
+  const [loading, setLoading] = useState(false); // Add loading state
 
   if (!data && !error) {
     return <h1>Loading...</h1>;
@@ -32,6 +64,8 @@ export default function Home() {
   const { items = [], selectedItems = [] } = data;
 
   async function toggleFavourite(id) {
+    setLoading(true);
+
     const response = await fetch("/api/items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -41,14 +75,23 @@ export default function Home() {
     if (response.ok) {
       await response.json();
       // Re-fetch the data after successful POST request
-      mutateItems(); // This will trigger a re-fetch of the data from "/api/items"
+      await mutateItems(); // This will trigger a re-fetch of the data from "/api/items"
     } else {
       console.error("Failed to toggle favourite");
     }
+
+    setLoading(false); // Stop loader after API call completes
   }
 
   return (
     <>
+      {/* Loading overlay */}
+      {loading && (
+        <Overlay>
+          <Loader />
+        </Overlay>
+      )}
+
       <div>
         <List>
           {selectedItems.map((item) => {
@@ -67,7 +110,6 @@ export default function Home() {
         </List>
       </div>
       <hr />
-
       <List>
         {items.map((item) => {
           return (

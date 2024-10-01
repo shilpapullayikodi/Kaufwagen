@@ -37,7 +37,14 @@ const StyledImage = styled.img`
   }
 `;
 
-export default function Card({ id, name, image, onClick, isSelected }) {
+export default function Card({
+  id,
+  name,
+  image,
+  onClick,
+  isSelected,
+  loading,
+}) {
   return (
     <>
       <Article onClick={() => onClick(id)}>
