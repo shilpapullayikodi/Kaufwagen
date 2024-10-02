@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import styled from "styled-components";
 import Card from "@/components/Card";
+import SearchForm from "@/components/SearchForm";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 
@@ -64,7 +65,13 @@ const Message = styled.div`
 `;
 
 export default function Home() {
-  const { data, error, mutate: mutateItems } = useSWR("/api/items");
+  const [query, setQuery] = useState(""); // State to store the input value
+
+  const apiUrl = `/api/items${
+    query ? `?search=${encodeURIComponent(query)}` : ""
+  }`;
+
+  const { data, error, mutate: mutateItems } = useSWR(apiUrl);
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
   if (!session) {
@@ -117,6 +124,8 @@ export default function Home() {
       )}
 
       <div>
+        <SearchForm query={query} setQuery={setQuery} />
+
         <List>
           {selectedItems.map((item) => {
             return (
