@@ -17,7 +17,7 @@ export default async function handler(request, response) {
   if (request.method === "POST") {
     try {
       const itemId = request.body;
-      const existingItem = await SelectedItem.findOne({ item: itemId }); //search the database for a single document that matches the provided query.
+      const existingItem = await SelectedItem.findOne({ item: itemId }); //search the database for a single document
       if (existingItem) {
         // remove from selectedItems if the item already exists
         await SelectedItem.deleteOne({ item: itemId });

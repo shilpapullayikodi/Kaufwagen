@@ -45,7 +45,7 @@ const Loader = styled.div`
 
   @keyframes spin {
     to {
-      transform: rotate(360deg);
+      transform: rotate(360deg); // (spin) rotate 360
     }
   }
 `;
