@@ -21,7 +21,7 @@ const ImageContainer = styled.div`
   height: 5rem;
   display: flex;
   align-items: center; // align items vertically center
-  justify-content: center; // align items vertically center
+  justify-content: center;
 `;
 const StyledImage = styled.img`
   width: 100%;
