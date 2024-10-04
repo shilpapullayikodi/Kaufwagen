@@ -34,10 +34,10 @@ export default async function handler(request, response) {
         userId: session.user.userId,
       }); //search the database for a single document
       if (existingItem) {
-        // remove from selectedItems if the item already exists
+        // remove from selectedItems item which is having this userid
         await SelectedItem.deleteOne({
           item: itemId,
-          userId: session.user.userId, //delete the item which is having this userid
+          userId: session.user.userId,
         });
         response.status(201).json({ status: "item removed" });
       } else {
