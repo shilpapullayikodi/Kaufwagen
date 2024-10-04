@@ -2,6 +2,8 @@ import useSWR from "swr";
 import styled from "styled-components";
 import Card from "@/components/Card";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import UserProfile from "@/components/UserProfile";
 
 const List = styled.ul`
   list-style: none;
@@ -49,11 +51,30 @@ const Loader = styled.div`
     }
   }
 `;
+const Message = styled.div`
+  text-align: center;
+  font-size: 1.5em;
+  color: #28a745;
+  margin-top: 50px;
+  font-weight: bold;
+  padding: 20px;
+  background-color: #f2f2f3;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+`;
 
 export default function Home() {
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
   const [loading, setLoading] = useState(false); // Add loading state
-
+  const { data: session } = useSession();
+  if (!session) {
+    return (
+      <>
+        <Message>Please log in before accessing your shopping list! 🛍️</Message>
+      </>
+    );
+  }
   if (!data && !error) {
     return (
       <Overlay>
@@ -61,7 +82,9 @@ export default function Home() {
       </Overlay>
     );
   }
+
   if (error) return <h1>Error loading items</h1>;
+
   //separating items and selected items into different variable
   const { items = [], selectedItems = [] } = data;
 
