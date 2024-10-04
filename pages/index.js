@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Card from "@/components/Card";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import UserProfile from "@/components/UserProfile";
 
 const List = styled.ul`
   list-style: none;
@@ -11,7 +10,7 @@ const List = styled.ul`
   gap: 10px; //1rem
   padding-left: 0;
   grid-template-columns: repeat(
-    auto-fit,
+    auto-fill,
     minmax(100px, 1fr)
   ); //dynamically change the no.of columns
 `;
