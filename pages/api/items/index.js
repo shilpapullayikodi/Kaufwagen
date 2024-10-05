@@ -15,7 +15,14 @@ export default async function handler(request, response) {
   }
 
   if (request.method === "GET") {
-    const items = await Item.find(); // [{_id: 123, name: 'Apple', image: 'apple_url'}, {_id: 124, name: 'Orange', image: 'orange_url'}]
+    const { search } = request.query;
+
+    const searchQuery = search
+      ? { name: { $regex: search, $options: "i" } }
+      : {}; // 'i' for case-insensitive search
+
+    const items = await Item.find({ ...searchQuery }); // [{_id: 123, name: 'Apple', image: 'apple_url'}, {_id: 124, name: 'Orange', image: 'orange_url'}]
+
     const selectedItems = await SelectedItem.find({
       //find all the selected items which is having this user id
       userId: session.user.userId,

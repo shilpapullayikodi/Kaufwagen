@@ -127,19 +127,20 @@ export default function Home() {
         <SearchForm query={query} setQuery={setQuery} />
 
         <List>
-          {selectedItems.map((item) => {
-            return (
-              <ListItem key={item._id}>
-                <Card
-                  id={item._id}
-                  name={item.name}
-                  image={item.image}
-                  onClick={toggleFavourite}
-                  isSelected={true}
-                />
-              </ListItem>
-            );
-          })}
+          {!query &&
+            selectedItems.map((item) => {
+              return (
+                <ListItem key={item._id}>
+                  <Card
+                    id={item._id}
+                    name={item.name}
+                    image={item.image}
+                    onClick={toggleFavourite}
+                    isSelected={true}
+                  />
+                </ListItem>
+              );
+            })}
         </List>
       </div>
       <hr />
