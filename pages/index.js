@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import styled from "styled-components";
 import Card from "@/components/Card";
+import SearchForm from "@/components/SearchForm";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 
@@ -64,7 +65,13 @@ const Message = styled.div`
 `;
 
 export default function Home() {
-  const { data, error, mutate: mutateItems } = useSWR("/api/items");
+  const [query, setQuery] = useState(""); // State to store the input value
+
+  const apiUrl = `/api/items${
+    query ? `?search=${encodeURIComponent(query)}` : "" // any special characters in the query (like spaces or symbols) are properly encoded for inclusion in the URL.
+  }`;
+
+  const { data, error, mutate: mutateItems } = useSWR(apiUrl);
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
   if (!session) {
@@ -99,7 +106,7 @@ export default function Home() {
     if (response.ok) {
       await response.json();
       // Re-fetch the data after successful POST request
-      await mutateItems(); // This will trigger a re-fetch of the data from "/api/items"
+      await mutateItems();
     } else {
       console.error("Failed to toggle favourite");
     }
@@ -117,20 +124,23 @@ export default function Home() {
       )}
 
       <div>
+        <SearchForm query={query} setQuery={setQuery} />
+
         <List>
-          {selectedItems.map((item) => {
-            return (
-              <ListItem key={item._id}>
-                <Card
-                  id={item._id}
-                  name={item.name}
-                  image={item.image}
-                  onClick={toggleFavourite}
-                  isSelected={true}
-                />
-              </ListItem>
-            );
-          })}
+          {!query &&
+            selectedItems.map((item) => {
+              return (
+                <ListItem key={item._id}>
+                  <Card
+                    id={item._id}
+                    name={item.name}
+                    image={item.image}
+                    onClick={toggleFavourite}
+                    isSelected={true}
+                  />
+                </ListItem>
+              );
+            })}
         </List>
       </div>
       <hr />
