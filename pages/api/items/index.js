@@ -18,7 +18,7 @@ export default async function handler(request, response) {
     const { search } = request.query;
 
     const searchQuery = search
-      ? { name: { $regex: search, $options: "i" } }
+      ? { name: { $regex: search, $options: "i" } } //filter the item by its name
       : {}; // 'i' for case-insensitive search
 
     const items = await Item.find({ ...searchQuery }); // [{_id: 123, name: 'Apple', image: 'apple_url'}, {_id: 124, name: 'Orange', image: 'orange_url'}]

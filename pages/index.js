@@ -68,7 +68,7 @@ export default function Home() {
   const [query, setQuery] = useState(""); // State to store the input value
 
   const apiUrl = `/api/items${
-    query ? `?search=${encodeURIComponent(query)}` : ""
+    query ? `?search=${encodeURIComponent(query)}` : "" // any special characters in the query (like spaces or symbols) are properly encoded for inclusion in the URL.
   }`;
 
   const { data, error, mutate: mutateItems } = useSWR(apiUrl);
@@ -106,7 +106,7 @@ export default function Home() {
     if (response.ok) {
       await response.json();
       // Re-fetch the data after successful POST request
-      await mutateItems(); // This will trigger a re-fetch of the data from "/api/items"
+      await mutateItems();
     } else {
       console.error("Failed to toggle favourite");
     }
