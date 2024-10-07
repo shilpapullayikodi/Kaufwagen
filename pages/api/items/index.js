@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]"; // Adjust the path to your auth options
+import { authOptions } from "../auth/[...nextauth]";
 import dbConnect from "@/db/connect";
 import Item from "../../../db/models/Item";
 import SelectedItem from "../../../db/models/SelectedItem";
@@ -15,13 +15,7 @@ export default async function handler(request, response) {
   }
 
   if (request.method === "GET") {
-    const { search } = request.query;
-
-    const searchQuery = search
-      ? { name: { $regex: search, $options: "i" } } //filter the item by its name
-      : {}; // 'i' for case-insensitive search
-
-    const items = await Item.find({ ...searchQuery }); // [{_id: 123, name: 'Apple', image: 'apple_url'}, {_id: 124, name: 'Orange', image: 'orange_url'}]
+    const items = await Item.find(); // [{_id: 123, name: 'Apple', image: 'apple_url'}, {_id: 124, name: 'Orange', image: 'orange_url'}]
 
     const selectedItems = await SelectedItem.find({
       //find all the selected items which is having this user id
