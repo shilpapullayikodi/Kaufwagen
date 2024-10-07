@@ -64,6 +64,20 @@ const Message = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
+const ClearButton = styled.button`
+  margin: 10px;
+  background-color: #a6b37d;
+  color: black;
+  border: 1px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  padding: 2px;
+  font-style: italic;
+  &:hover {
+    background-color: #d37676;
+  }
+`;
 
 export default function Home() {
   const [query, setQuery] = useState(""); // State to store the input value
@@ -126,6 +140,10 @@ export default function Home() {
 
       <div>
         <SearchForm query={query} setQuery={setQuery} />
+
+        {query && (
+          <ClearButton onClick={() => setQuery("")}>Clear Search</ClearButton>
+        )}
 
         <List>
           {!query &&
