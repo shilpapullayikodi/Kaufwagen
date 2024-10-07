@@ -2,7 +2,6 @@ import { useState } from "react";
 import useSWR from "swr";
 
 export default function SearchForm({ query, setQuery }) {
-  // Handle input change and call the search function
   const handleInputChange = (e) => {
     const value = e.target.value;
     setQuery(value); // Update the query state
@@ -13,8 +12,9 @@ export default function SearchForm({ query, setQuery }) {
       <input
         type="text"
         placeholder="Search item..."
+        autoFocus
         value={query}
-        onChange={handleInputChange} // Trigger onChange event when user types
+        onChange={handleInputChange}
         style={{
           padding: "8px",
           fontSize: "16px",

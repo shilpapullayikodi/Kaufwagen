@@ -4,6 +4,7 @@ import Card from "@/components/Card";
 import SearchForm from "@/components/SearchForm";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const List = styled.ul`
   list-style: none;
@@ -66,14 +67,10 @@ const Message = styled.div`
 
 export default function Home() {
   const [query, setQuery] = useState(""); // State to store the input value
-
-  const apiUrl = `/api/items${
-    query ? `?search=${encodeURIComponent(query)}` : "" // any special characters in the query (like spaces or symbols) are properly encoded for inclusion in the URL.
-  }`;
-
-  const { data, error, mutate: mutateItems } = useSWR(apiUrl);
+  const { data, error, mutate: mutateItems } = useSWR("/api/items");
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
+
   if (!session) {
     return (
       <>
@@ -111,9 +108,13 @@ export default function Home() {
       console.error("Failed to toggle favourite");
     }
 
-    setLoading(false); // Stop loader after API call completes
+    setLoading(false); // API call completes
   }
+  // Filter items based on the query
 
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(query.toLowerCase())
+  );
   return (
     <>
       {/* Loading overlay */}
@@ -145,7 +146,7 @@ export default function Home() {
       </div>
       <hr />
       <List>
-        {items.map((item) => {
+        {filteredItems.map((item) => {
           return (
             <ListItem key={item._id}>
               <Card
