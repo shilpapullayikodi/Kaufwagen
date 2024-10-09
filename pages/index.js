@@ -4,7 +4,6 @@ import Card from "@/components/Card";
 import SearchForm from "@/components/SearchForm";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 
 const List = styled.ul`
   list-style: none;
@@ -79,7 +78,27 @@ const ClearButton = styled.button`
   }
 `;
 
+const CategoryContainer = styled.div`
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 0.5em;
+  background-color: #f2f2f3;
+`;
+const CategoryHeader = styled.h4`
+  margin: auto;
+  padding: 0.5em;
+  cursor: pointer;
+`;
 export default function Home() {
+  const categories = [
+    "Fruits & Vegetables",
+    "Bread & Baked Goods",
+    "Sweets & Snacks",
+    "Eggs & Diary",
+    "Grain Products",
+    "Personal Care",
+    "Household",
+  ];
   const [query, setQuery] = useState(""); // State to store the input value
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
   const [loading, setLoading] = useState(false); // Add loading state
@@ -124,8 +143,18 @@ export default function Home() {
 
     setLoading(false); // API call completes
   }
-  // Filter items based on the query
 
+  const groupedItems = {};
+  items.forEach((item) => {
+    if (!groupedItems[item.category]) {
+      groupedItems[item.category] = [];
+    }
+    groupedItems[item.category].push(item);
+  });
+
+  console.log(groupedItems);
+
+  // Filter items based on the query
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -147,39 +176,80 @@ export default function Home() {
 
         <List>
           {!query &&
-            selectedItems.map((item) => {
-              return (
-                <ListItem key={item._id}>
-                  <Card
-                    id={item._id}
-                    name={item.name}
-                    image={item.image}
-                    onClick={toggleFavourite}
-                    isSelected={true}
-                  />
-                </ListItem>
-              );
-            })}
+            selectedItems
+              .slice()
+              .sort((a, b) => {
+                if (a.name > b.name) return 1;
+                if (a.name < b.name) return -1;
+                return 0;
+              })
+              .map((item) => {
+                return (
+                  <ListItem key={item._id}>
+                    <Card
+                      id={item._id}
+                      name={item.name}
+                      image={item.image}
+                      onClick={toggleFavourite}
+                      isSelected={true}
+                    />
+                  </ListItem>
+                );
+              })}
         </List>
       </div>
       <hr />
       <List>
-        {filteredItems.map((item) => {
+        {query &&
+          filteredItems.map((item) => {
+            return (
+              <ListItem key={item._id}>
+                <Card
+                  id={item._id}
+                  name={item.name}
+                  image={item.image}
+                  onClick={toggleFavourite}
+                  isSelected={selectedItems.find(
+                    (selectedItem) => selectedItem._id == item._id
+                  )}
+                />
+              </ListItem>
+            );
+          })}
+      </List>
+
+      {!query &&
+        categories.map((category) => {
           return (
-            <ListItem key={item._id}>
-              <Card
-                id={item._id}
-                name={item.name}
-                image={item.image}
-                onClick={toggleFavourite}
-                isSelected={selectedItems.find(
-                  (selectedItem) => selectedItem._id == item._id
-                )}
-              />
-            </ListItem>
+            <>
+              <CategoryContainer>
+                <CategoryHeader>{category}</CategoryHeader>
+                <List>
+                  {groupedItems[category]
+                    .slice()
+                    .sort((a, b) => {
+                      if (a.name > b.name) return 1;
+                      if (a.name < b.name) return -1;
+                      return 0;
+                    })
+                    .map((item) => (
+                      <ListItem key={item._id}>
+                        <Card
+                          id={item._id}
+                          name={item.name}
+                          image={item.image}
+                          onClick={toggleFavourite}
+                          isSelected={selectedItems.find(
+                            (selectedItem) => selectedItem._id === item._id
+                          )}
+                        />
+                      </ListItem>
+                    ))}
+                </List>
+              </CategoryContainer>
+            </>
           );
         })}
-      </List>
     </>
   );
 }

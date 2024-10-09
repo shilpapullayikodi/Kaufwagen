@@ -1,8 +1,6 @@
-import { useState } from "react";
-import useSWR from "swr";
-
 export default function SearchForm({ query, setQuery }) {
   const handleInputChange = (e) => {
+    e.preventDefault();
     const value = e.target.value;
     setQuery(value); // Update the query state
   };
