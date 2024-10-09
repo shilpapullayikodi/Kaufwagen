@@ -4,7 +4,6 @@ import Card from "@/components/Card";
 import SearchForm from "@/components/SearchForm";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 
 const List = styled.ul`
   list-style: none;
@@ -80,10 +79,21 @@ const ClearButton = styled.button`
 `;
 
 export default function Home() {
+  const categories = [
+    "Fruits & Vegetables",
+    "Bread & Baked Goods",
+    "Grain Products",
+    "Household",
+    "Eggs & Diary",
+    "Personal Care",
+    "Sweets & Snacks",
+    "Beverages",
+  ];
   const [query, setQuery] = useState(""); // State to store the input value
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
+  const [selectedExpandedCategory, setSelectedExpandedCategory] = useState("");
 
   if (!session) {
     return (
@@ -124,8 +134,18 @@ export default function Home() {
 
     setLoading(false); // API call completes
   }
-  // Filter items based on the query
 
+  const groupedItems = {};
+  items.forEach((item) => {
+    if (!groupedItems[item.category]) {
+      groupedItems[item.category] = [];
+    }
+    groupedItems[item.category].push(item);
+  });
+
+  console.log(groupedItems);
+
+  // Filter items based on the query
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -164,21 +184,46 @@ export default function Home() {
       </div>
       <hr />
       <List>
-        {filteredItems.map((item) => {
-          return (
-            <ListItem key={item._id}>
-              <Card
-                id={item._id}
-                name={item.name}
-                image={item.image}
-                onClick={toggleFavourite}
-                isSelected={selectedItems.find(
-                  (selectedItem) => selectedItem._id == item._id
-                )}
-              />
-            </ListItem>
-          );
-        })}
+        {query &&
+          filteredItems.map((item) => {
+            return (
+              <ListItem key={item._id}>
+                <Card
+                  id={item._id}
+                  name={item.name}
+                  image={item.image}
+                  onClick={toggleFavourite}
+                  isSelected={selectedItems.find(
+                    (selectedItem) => selectedItem._id == item._id
+                  )}
+                />
+              </ListItem>
+            );
+          })}
+      </List>
+
+      <List>
+        {!query &&
+          categories.map((category) => {
+            return (
+              <>
+                <h4>{category}</h4>
+                {groupedItems[category].map((item) => (
+                  <ListItem key={item._id}>
+                    <Card
+                      id={item._id}
+                      name={item.name}
+                      image={item.image}
+                      onClick={toggleFavourite}
+                      isSelected={selectedItems.find(
+                        (selectedItem) => selectedItem._id === item._id
+                      )}
+                    />
+                  </ListItem>
+                ))}
+              </>
+            );
+          })}
       </List>
     </>
   );

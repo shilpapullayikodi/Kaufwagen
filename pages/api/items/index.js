@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
+import { authOptions } from "../auth/[...nextauth]"; // Adjust the path to your auth options
 import dbConnect from "@/db/connect";
 import Item from "../../../db/models/Item";
 import SelectedItem from "../../../db/models/SelectedItem";
@@ -13,7 +13,6 @@ export default async function handler(request, response) {
     // If the user is not logged in, return an error
     return response.status(401).json({ error: "Not authenticated" });
   }
-
   if (request.method === "GET") {
     const items = await Item.find(); // [{_id: 123, name: 'Apple', image: 'apple_url'}, {_id: 124, name: 'Orange', image: 'orange_url'}]
 
