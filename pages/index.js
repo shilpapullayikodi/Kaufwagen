@@ -82,12 +82,11 @@ export default function Home() {
   const categories = [
     "Fruits & Vegetables",
     "Bread & Baked Goods",
+    "Sweets & Snacks",
+    "Eggs & Diary",
     "Grain Products",
     "Household",
-    "Eggs & Diary",
     "Personal Care",
-    "Sweets & Snacks",
-    "Beverages",
   ];
   const [query, setQuery] = useState(""); // State to store the input value
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
@@ -208,19 +207,26 @@ export default function Home() {
             return (
               <>
                 <h4>{category}</h4>
-                {groupedItems[category].map((item) => (
-                  <ListItem key={item._id}>
-                    <Card
-                      id={item._id}
-                      name={item.name}
-                      image={item.image}
-                      onClick={toggleFavourite}
-                      isSelected={selectedItems.find(
-                        (selectedItem) => selectedItem._id === item._id
-                      )}
-                    />
-                  </ListItem>
-                ))}
+                {groupedItems[category]
+                  .slice()
+                  .sort((a, b) => {
+                    if (a.name > b.name) return 1;
+                    if (a.name < b.name) return -1;
+                    return 0;
+                  })
+                  .map((item) => (
+                    <ListItem key={item._id}>
+                      <Card
+                        id={item._id}
+                        name={item.name}
+                        image={item.image}
+                        onClick={toggleFavourite}
+                        isSelected={selectedItems.find(
+                          (selectedItem) => selectedItem._id === item._id
+                        )}
+                      />
+                    </ListItem>
+                  ))}
               </>
             );
           })}
