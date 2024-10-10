@@ -83,10 +83,20 @@ const CategoryContainer = styled.div`
   border-radius: 8px;
   padding: 0.5em;
   background-color: var(--color-card-container);
+  position: relative;
 `;
 const CategoryHeader = styled.h4`
   margin: auto;
   padding: 0.5em;
+  cursor: pointer;
+  color: white;
+`;
+const CategoryFooter = styled.h4`
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: auto;
   cursor: pointer;
   color: white;
 `;
@@ -96,6 +106,7 @@ export default function Home() {
     "Bread & Baked Goods",
     "Sweets & Snacks",
     "Eggs & Diary",
+    "Meat & Fish",
     "Grain Products",
     "Frozen Foods",
     "Personal Care",
@@ -254,6 +265,9 @@ export default function Home() {
                           />
                         </ListItem>
                       ))}
+                    <CategoryFooter onClick={() => toggleSelect(category)}>
+                      ^
+                    </CategoryFooter>
                   </List>
                 )}
               </CategoryContainer>
