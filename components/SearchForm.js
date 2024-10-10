@@ -1,3 +1,15 @@
+import styled from "styled-components";
+
+const SearchBar = styled.input`
+  width: 100%;
+  background-color: #253036;
+  color: #f4f4f4;
+  border: 1px solid #253036;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 18px;
+`;
+
 export default function SearchForm({ query, setQuery }) {
   const handleInputChange = (e) => {
     e.preventDefault();
@@ -7,18 +19,12 @@ export default function SearchForm({ query, setQuery }) {
 
   return (
     <form>
-      <input
+      <SearchBar
         type="text"
         placeholder="Search item..."
         autoFocus
         value={query}
         onChange={handleInputChange}
-        style={{
-          padding: "8px",
-          fontSize: "16px",
-          width: "100%",
-          boxSizing: "border-box",
-        }}
       />
     </form>
   );

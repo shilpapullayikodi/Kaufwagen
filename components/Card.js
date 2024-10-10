@@ -1,18 +1,17 @@
 import styled from "styled-components";
 
 const Article = styled.article`
-  border: 1px solid lightgrey;
   padding: 0.2rem;
-  box-shadow: 10px 5px 5px gainsboro;
+  box-shadow: 10px 5px 5px #2e3c41;
   width: 6rem;
 `;
 const Figure = styled.figure`
   position: relative;
   margin: 0;
-  background-color: #a6b37d;
+  background-color: var(--color-card-green);
 
   &.isSelected {
-    background-color: #ed9898;
+    background-color: var(--color-card-red);
   }
 `;
 

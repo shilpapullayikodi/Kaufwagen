@@ -82,12 +82,13 @@ const CategoryContainer = styled.div`
   border: 1px solid black;
   border-radius: 8px;
   padding: 0.5em;
-  background-color: #f2f2f3;
+  background-color: var(--color-card-container);
 `;
 const CategoryHeader = styled.h4`
   margin: auto;
   padding: 0.5em;
   cursor: pointer;
+  color: white;
 `;
 export default function Home() {
   const categories = [
@@ -198,7 +199,7 @@ export default function Home() {
               })}
         </List>
       </div>
-      <hr />
+
       <List>
         {query &&
           filteredItems.map((item) => {
