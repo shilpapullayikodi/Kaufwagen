@@ -97,6 +97,7 @@ export default function Home() {
     "Sweets & Snacks",
     "Eggs & Diary",
     "Grain Products",
+    "Frozen Foods",
     "Personal Care",
     "Household",
   ];
@@ -104,6 +105,7 @@ export default function Home() {
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   if (!session) {
     return (
@@ -159,6 +161,9 @@ export default function Home() {
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
+  function toggleSelect(category) {
+    setSelectedCategory(selectedCategory === category ? "" : category);
+  }
   return (
     <>
       {/* Loading overlay */}
@@ -223,30 +228,34 @@ export default function Home() {
         categories.map((category) => {
           return (
             <>
-              <CategoryContainer>
-                <CategoryHeader>{category}</CategoryHeader>
-                <List>
-                  {groupedItems[category]
-                    .slice()
-                    .sort((a, b) => {
-                      if (a.name > b.name) return 1;
-                      if (a.name < b.name) return -1;
-                      return 0;
-                    })
-                    .map((item) => (
-                      <ListItem key={item._id}>
-                        <Card
-                          id={item._id}
-                          name={item.name}
-                          image={item.image}
-                          onClick={toggleFavourite}
-                          isSelected={selectedItems.find(
-                            (selectedItem) => selectedItem._id === item._id
-                          )}
-                        />
-                      </ListItem>
-                    ))}
-                </List>
+              <CategoryContainer key={category}>
+                <CategoryHeader onClick={() => toggleSelect(category)}>
+                  {category}
+                </CategoryHeader>
+                {selectedCategory === category && (
+                  <List>
+                    {groupedItems[category]
+                      .slice()
+                      .sort((a, b) => {
+                        if (a.name > b.name) return 1;
+                        if (a.name < b.name) return -1;
+                        return 0;
+                      })
+                      .map((item) => (
+                        <ListItem key={item._id}>
+                          <Card
+                            id={item._id}
+                            name={item.name}
+                            image={item.image}
+                            onClick={toggleFavourite}
+                            isSelected={selectedItems.find(
+                              (selectedItem) => selectedItem._id === item._id
+                            )}
+                          />
+                        </ListItem>
+                      ))}
+                  </List>
+                )}
               </CategoryContainer>
             </>
           );
