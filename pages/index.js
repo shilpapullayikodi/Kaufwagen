@@ -83,10 +83,20 @@ const CategoryContainer = styled.div`
   border-radius: 8px;
   padding: 0.5em;
   background-color: var(--color-card-container);
+  position: relative;
 `;
 const CategoryHeader = styled.h4`
   margin: auto;
   padding: 0.5em;
+  cursor: pointer;
+  color: white;
+`;
+const CategoryFooter = styled.h4`
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: auto;
   cursor: pointer;
   color: white;
 `;
@@ -96,7 +106,9 @@ export default function Home() {
     "Bread & Baked Goods",
     "Sweets & Snacks",
     "Eggs & Diary",
+    "Meat & Fish",
     "Grain Products",
+    "Frozen Foods",
     "Personal Care",
     "Household",
   ];
@@ -104,6 +116,7 @@ export default function Home() {
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   if (!session) {
     return (
@@ -159,6 +172,9 @@ export default function Home() {
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
+  function toggleSelect(category) {
+    setSelectedCategory(selectedCategory === category ? "" : category);
+  }
   return (
     <>
       {/* Loading overlay */}
@@ -223,30 +239,37 @@ export default function Home() {
         categories.map((category) => {
           return (
             <>
-              <CategoryContainer>
-                <CategoryHeader>{category}</CategoryHeader>
-                <List>
-                  {groupedItems[category]
-                    .slice()
-                    .sort((a, b) => {
-                      if (a.name > b.name) return 1;
-                      if (a.name < b.name) return -1;
-                      return 0;
-                    })
-                    .map((item) => (
-                      <ListItem key={item._id}>
-                        <Card
-                          id={item._id}
-                          name={item.name}
-                          image={item.image}
-                          onClick={toggleFavourite}
-                          isSelected={selectedItems.find(
-                            (selectedItem) => selectedItem._id === item._id
-                          )}
-                        />
-                      </ListItem>
-                    ))}
-                </List>
+              <CategoryContainer key={category}>
+                <CategoryHeader onClick={() => toggleSelect(category)}>
+                  {category}
+                </CategoryHeader>
+                {selectedCategory === category && (
+                  <List>
+                    {groupedItems[category]
+                      .slice()
+                      .sort((a, b) => {
+                        if (a.name > b.name) return 1;
+                        if (a.name < b.name) return -1;
+                        return 0;
+                      })
+                      .map((item) => (
+                        <ListItem key={item._id}>
+                          <Card
+                            id={item._id}
+                            name={item.name}
+                            image={item.image}
+                            onClick={toggleFavourite}
+                            isSelected={selectedItems.find(
+                              (selectedItem) => selectedItem._id === item._id
+                            )}
+                          />
+                        </ListItem>
+                      ))}
+                    <CategoryFooter onClick={() => toggleSelect(category)}>
+                      ^
+                    </CategoryFooter>
+                  </List>
+                )}
               </CategoryContainer>
             </>
           );
