@@ -100,6 +100,13 @@ const CategoryFooter = styled.h4`
   cursor: pointer;
   color: white;
 `;
+const MessageText = styled.div`
+  position: absolute;
+  left: 50%;
+  margin: auto;
+  color: white;
+  font-size: 1.3em;
+`;
 export default function Home() {
   const categories = [
     "Fruits & Vegetables",
@@ -216,10 +223,10 @@ export default function Home() {
         </List>
       </div>
 
-      <List>
-        {query &&
-          filteredItems.map((item) => {
-            return (
+      {query && (
+        <List>
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
               <ListItem key={item._id}>
                 <Card
                   id={item._id}
@@ -231,9 +238,12 @@ export default function Home() {
                   )}
                 />
               </ListItem>
-            );
-          })}
-      </List>
+            ))
+          ) : (
+            <MessageText>Item not found</MessageText>
+          )}
+        </List>
+      )}
 
       {!query &&
         categories.map((category) => {

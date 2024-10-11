@@ -8,6 +8,7 @@ const Article = styled.article`
 const Figure = styled.figure`
   position: relative;
   margin: 0;
+  padding-left: 0.2em;
   background-color: var(--color-card-green);
 
   &.isSelected {
