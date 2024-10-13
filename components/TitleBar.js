@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import UserProfile from "./UserProfile.js";
 
 const Headline = styled.h1`
   position: fixed;
@@ -13,6 +14,11 @@ const Headline = styled.h1`
   color: white;
 `;
 
-export default function TitleBar() {
-  return <Headline>Kaufwagen🛒</Headline>;
+export default function TitleBar({ session, signOut, signIn }) {
+  return (
+    <Headline>
+      Kaufwagen 🛒
+      <UserProfile />
+    </Headline>
+  );
 }
