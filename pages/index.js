@@ -101,11 +101,11 @@ const CategoryFooter = styled.h4`
   color: white;
 `;
 const MessageText = styled.div`
-  position: absolute;
-  left: 50%;
-  margin: auto;
+  font-style: italic;
   color: white;
-  font-size: 1.3em;
+  font-size: 1em;
+  width: 100%;
+  white-space: nowrap;
 `;
 export default function Home() {
   const categories = [
@@ -124,7 +124,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
   const [selectedCategory, setSelectedCategory] = useState("");
-
   if (!session) {
     return (
       <>
@@ -240,7 +239,7 @@ export default function Home() {
               </ListItem>
             ))
           ) : (
-            <MessageText>Item not found</MessageText>
+            <MessageText>Oops! We couldn’t find any items</MessageText>
           )}
         </List>
       )}

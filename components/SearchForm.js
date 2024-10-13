@@ -16,9 +16,12 @@ export default function SearchForm({ query, setQuery }) {
     const value = e.target.value;
     setQuery(value); // Update the query state
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <SearchBar
         type="text"
         placeholder="Search item..."
