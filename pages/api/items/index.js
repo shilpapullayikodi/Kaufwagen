@@ -7,10 +7,8 @@ import SelectedItem from "../../../db/models/SelectedItem";
 export default async function handler(request, response) {
   await dbConnect();
 
-  // Get session data in serverside
   const session = await getServerSession(request, response, authOptions);
   if (!session) {
-    // If the user is not logged in, return an error
     return response.status(401).json({ error: "Not authenticated" });
   }
   if (request.method === "GET") {
@@ -22,7 +20,7 @@ export default async function handler(request, response) {
     }).populate("item"); //[{_id: 345645, item:{_id: 123, name: 'Apple', image: 'apple_url'}}]
     return response.status(200).json({
       items: items,
-      selectedItems: selectedItems?.map((selectedItem) => selectedItem.item), //extract items objects from selectedItems collection
+      selectedItems: selectedItems?.map((selectedItem) => selectedItem.item),
     });
   }
 

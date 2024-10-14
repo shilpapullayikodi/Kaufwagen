@@ -102,11 +102,24 @@ const CategoryFooter = styled.h4`
 `;
 const MessageText = styled.div`
   font-style: italic;
-  color: white;
+  color: gray;
   font-size: 1em;
   width: 100%;
   white-space: nowrap;
 `;
+const EmptyMessage = styled.div`
+  display: flex; // Use flexbox layout
+  flex-direction: column; // Arrange items vertically
+  align-items: center; // Center items horizontally
+  justify-content: center; // Center items vertically
+  text-align: center; // Center text
+  margin-top: 30px;
+  color: gray;
+  font-size: 1.5em;
+  font-style: italic;
+  padding: 20px; // Padding around the message
+`;
+
 export default function Home() {
   const categories = [
     "Fruits & Vegetables",
@@ -119,7 +132,7 @@ export default function Home() {
     "Personal Care",
     "Household",
   ];
-  const [query, setQuery] = useState(""); // State to store the input value
+  const [query, setQuery] = useState("");
   const { data, error, mutate: mutateItems } = useSWR("/api/items");
   const [loading, setLoading] = useState(false); // Add loading state
   const { data: session } = useSession();
@@ -155,13 +168,12 @@ export default function Home() {
 
     if (response.ok) {
       await response.json();
-      // Re-fetch the data after successful POST request
       await mutateItems();
     } else {
       console.error("Failed to toggle favourite");
     }
 
-    setLoading(false); // API call completes
+    setLoading(false);
   }
 
   const groupedItems = {};
@@ -174,7 +186,6 @@ export default function Home() {
 
   console.log(groupedItems);
 
-  // Filter items based on the query
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -220,6 +231,12 @@ export default function Home() {
                 );
               })}
         </List>
+        {!selectedItems.length && !query && (
+          <EmptyMessage>
+            Nothing to buy? <br />⇡ Search an item by name or browse the
+            categories below. ⇣
+          </EmptyMessage>
+        )}
       </div>
 
       {query && (
