@@ -36,6 +36,11 @@ const StyledImage = styled.img`
     background-color: #ed9898;
   }
 `;
+const CharImage = styled.span`
+  font-size: 4em;
+  font-family: fantasy;
+  font-weight: bold;
+`;
 
 export default function Card({
   id,
@@ -47,14 +52,19 @@ export default function Card({
 }) {
   return (
     <>
-      <Article onClick={() => onClick(id)}>
+      <Article onClick={() => onClick(id == 0 ? name : id)}>
+        {/* if id is 0, onClick function will be AddNew else it will be toggleFavourite. For toggleFavourite pass id, else name to create new item  */}
         <Figure className={isSelected ? "isSelected" : ""}>
           <ImageContainer>
-            <StyledImage
-              src={image}
-              alt={name}
-              className={isSelected ? "isSelected" : ""}
-            />
+            {image ? (
+              <StyledImage
+                src={image}
+                alt={name}
+                className={isSelected ? "isSelected" : ""}
+              />
+            ) : (
+              <CharImage>{name.charAt(0).toUpperCase()}</CharImage>
+            )}
           </ImageContainer>
           <figcaption>{name}</figcaption>
         </Figure>
