@@ -108,16 +108,16 @@ const MessageText = styled.div`
   white-space: nowrap;
 `;
 const EmptyMessage = styled.div`
-  display: flex; // Use flexbox layout
-  flex-direction: column; // Arrange items vertically
-  align-items: center; // Center items horizontally
-  justify-content: center; // Center items vertically
-  text-align: center; // Center text
-  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 1em;
   color: gray;
   font-size: 1.5em;
   font-style: italic;
-  padding: 20px; // Padding around the message
+  padding: 20px;
 `;
 
 export default function Home() {
