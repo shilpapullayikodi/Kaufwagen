@@ -103,7 +103,7 @@ const CategoryFooter = styled.h4`
 const MessageText = styled.div`
   font-style: italic;
   color: gray;
-  font-size: 1em;
+  font-size: 1.5em;
   width: 100%;
   white-space: nowrap;
 `;
@@ -157,13 +157,34 @@ export default function Home() {
   //separating items and selected items into different variable
   const { items = [], selectedItems = [] } = data;
 
+  async function addNew(name) {
+    setLoading(true);
+
+    const response = await fetch("/api/items", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+
+    if (response.ok) {
+      await response.json();
+      await mutateItems();
+    } else {
+      console.error("Failed to toggle favourite");
+    }
+
+    setLoading(false);
+  }
+
   async function toggleFavourite(id) {
     setLoading(true);
 
     const response = await fetch("/api/items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(id),
+      body: JSON.stringify({ id: id }),
     });
 
     if (response.ok) {
@@ -192,6 +213,7 @@ export default function Home() {
   function toggleSelect(category) {
     setSelectedCategory(selectedCategory === category ? "" : category);
   }
+
   return (
     <>
       {/* Loading overlay */}
@@ -256,7 +278,7 @@ export default function Home() {
               </ListItem>
             ))
           ) : (
-            <MessageText>Oops! We couldn’t find any items</MessageText>
+            <Card id={0} name={query} onClick={addNew} isSelected={false} />
           )}
         </List>
       )}

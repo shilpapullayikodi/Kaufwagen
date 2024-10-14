@@ -26,22 +26,32 @@ export default async function handler(request, response) {
 
   if (request.method === "POST") {
     try {
-      const itemId = request.body;
-      const existingItem = await SelectedItem.findOne({
-        item: itemId,
-        userId: session.user.userId,
-      }); //search the database for a single document
-      if (existingItem) {
-        // remove from selectedItems item which is having this userid
-        await SelectedItem.deleteOne({
-          item: itemId,
+      const { id, name } = request.body;
+
+      if (id) {
+        const existingItem = await SelectedItem.findOne({
+          item: id,
           userId: session.user.userId,
-        });
-        response.status(201).json({ status: "item removed" });
+        }); //search the database for a single document
+        if (existingItem) {
+          // remove from selectedItems item which is having this userid
+          await SelectedItem.deleteOne({
+            item: id,
+            userId: session.user.userId,
+          });
+          response.status(201).json({ status: "item removed" });
+        } else {
+          console.log({ item: id, userId: session.user.userId });
+          await SelectedItem.create({
+            item: id,
+            userId: session.user.userId,
+          });
+          response.status(201).json({ status: "item added." });
+        }
       } else {
-        console.log({ item: itemId, userId: session.user.userId });
+        const item = await Item.create({ name: name });
         await SelectedItem.create({
-          item: itemId,
+          item: item._id,
           userId: session.user.userId,
         });
         response.status(201).json({ status: "item added." });
