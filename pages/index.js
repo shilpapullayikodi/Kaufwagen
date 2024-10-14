@@ -4,6 +4,7 @@ import Card from "@/components/Card";
 import SearchForm from "@/components/SearchForm";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 const List = styled.ul`
   list-style: none;
@@ -54,12 +55,10 @@ const Loader = styled.div`
 const Message = styled.div`
   text-align: center;
   font-size: 1.5em;
-  color: #28a745;
+  color: rgb(222 222 222);
   margin-top: 50px;
   font-weight: bold;
   padding: 20px;
-  background-color: #f2f2f3;
-  border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
@@ -140,7 +139,9 @@ export default function Home() {
   if (!session) {
     return (
       <>
-        <Message>Please log in before accessing your shopping list! 🛍️</Message>
+        <Message>
+          Log in with your Github before accessing the shopping list! 🛍️
+        </Message>
       </>
     );
   }
