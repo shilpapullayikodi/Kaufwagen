@@ -20,13 +20,13 @@ const ImageContainer = styled.div`
   position: relative;
   height: 5rem;
   display: flex;
-  align-items: center; // align items vertically center
+  align-items: center;
   justify-content: center;
 `;
 const StyledImage = styled.img`
   width: 100%;
   height: 100%;
-  width: 100%; //responsive
+  width: 100%;
   height: auto;
   max-height: 100%;
   max-width: 100%; //prevent overflow
@@ -38,8 +38,13 @@ const StyledImage = styled.img`
 `;
 const CharImage = styled.span`
   font-size: 4em;
-  font-family: fantasy;
-  font-weight: bold;
+  font-family: emoji;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 `;
 
 export default function Card({
