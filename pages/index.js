@@ -1,27 +1,13 @@
 import useSWR from "swr";
 import styled from "styled-components";
 import Card from "@/components/Card";
-import SearchForm from "@/components/SearchForm";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-
-const List = styled.ul`
-  list-style: none;
-  display: grid;
-  gap: 10px; //1rem
-  padding-left: 0;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(100px, 1fr)
-  ); //dynamically change the no.of columns
-`;
-const ListItem = styled.li`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  cursor: pointer;
-`;
+import SelectedItem from "@/components/SelectedItem";
+//import SearchForm from "@/components/SearchForm";
+import SearchItem from "@/components/SearchItem";
+import ListCategories from "@/components/ListCategories";
 
 // Full-screen overlay for loading spinner
 const Overlay = styled.div`
@@ -62,61 +48,12 @@ const Message = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
-const ClearButton = styled.button`
-  margin: 10px;
-  background-color: #a6b37d;
-  color: black;
-  border: 1px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1em;
-  padding: 2px;
-  font-style: italic;
-  &:hover {
-    background-color: #d37676;
-  }
-`;
-
-const CategoryContainer = styled.div`
-  border: 1px solid black;
-  border-radius: 8px;
-  padding: 0.5em;
-  background-color: var(--color-card-container);
-  position: relative;
-`;
-const CategoryHeader = styled.h4`
-  margin: auto;
-  padding: 0.5em;
-  cursor: pointer;
-  color: white;
-`;
-const CategoryFooter = styled.h4`
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: auto;
-  cursor: pointer;
-  color: white;
-`;
 const MessageText = styled.div`
   font-style: italic;
   color: gray;
   font-size: 1.5em;
   width: 100%;
   white-space: nowrap;
-`;
-const EmptyMessage = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin-top: 1em;
-  color: gray;
-  font-size: 1.5em;
-  font-style: italic;
-  padding: 20px;
 `;
 
 export default function Home() {
@@ -224,105 +161,30 @@ export default function Home() {
         </Overlay>
       )}
 
-      <div>
-        <SearchForm query={query} setQuery={setQuery} />
+      <SelectedItem
+        query={query}
+        selectedItems={selectedItems}
+        toggleFavourite={toggleFavourite}
+      />
 
-        {query && (
-          <ClearButton onClick={() => setQuery("")}>Clear Search</ClearButton>
-        )}
+      <SearchItem
+        query={query}
+        setQuery={setQuery}
+        filteredItems={filteredItems}
+        toggleFavourite={toggleFavourite}
+        addNew={addNew}
+        selectedItems={selectedItems}
+      />
 
-        <List>
-          {!query &&
-            selectedItems
-              .slice()
-              .sort((a, b) => {
-                if (a.name > b.name) return 1;
-                if (a.name < b.name) return -1;
-                return 0;
-              })
-              .map((item) => {
-                return (
-                  <ListItem key={item._id}>
-                    <Card
-                      id={item._id}
-                      name={item.name}
-                      image={item.image}
-                      onClick={toggleFavourite}
-                      isSelected={true}
-                    />
-                  </ListItem>
-                );
-              })}
-        </List>
-        {!selectedItems.length && !query && (
-          <EmptyMessage>
-            Nothing to buy? <br />⇡ Search an item by name or browse the
-            categories below. ⇣
-          </EmptyMessage>
-        )}
-      </div>
-
-      {query && (
-        <List>
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
-              <ListItem key={item._id}>
-                <Card
-                  id={item._id}
-                  name={item.name}
-                  image={item.image}
-                  onClick={toggleFavourite}
-                  isSelected={selectedItems.find(
-                    (selectedItem) => selectedItem._id == item._id
-                  )}
-                />
-              </ListItem>
-            ))
-          ) : (
-            <Card id={0} name={query} onClick={addNew} isSelected={false} />
-          )}
-        </List>
-      )}
-
-      {!query &&
-        categories.map((category) => {
-          return (
-            <>
-              <CategoryContainer key={category}>
-                <CategoryHeader onClick={() => toggleSelect(category)}>
-                  {category}
-                </CategoryHeader>
-                {selectedCategory === category && (
-                  <List>
-                    {groupedItems[category]
-                      .slice()
-                      .sort((a, b) => {
-                        if (a.name > b.name) return 1;
-                        if (a.name < b.name) return -1;
-                        return 0;
-                      })
-                      .map((item) => (
-                        <ListItem key={item._id}>
-                          <Card
-                            id={item._id}
-                            name={item.name}
-                            image={item.image}
-                            onClick={toggleFavourite}
-                            isSelected={selectedItems.find(
-                              (selectedItem) => selectedItem._id === item._id
-                            )}
-                          />
-                        </ListItem>
-                      ))}
-                    <CategoryFooter onClick={() => toggleSelect(category)}>
-                      ^
-                    </CategoryFooter>
-                  </List>
-                )}
-              </CategoryContainer>
-            </>
-          );
-        })}
+      <ListCategories
+        query={query}
+        groupedItems={groupedItems}
+        selectedCategory={selectedCategory}
+        categories={categories}
+        toggleSelect={toggleSelect}
+        toggleFavourite={toggleFavourite}
+        selectedItems={selectedItems}
+      />
     </>
   );
 }

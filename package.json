@@ -12,7 +12,7 @@
     "@auth/mongodb-adapter": "^3.5.3",
     "@iconify/react": "^5.0.2",
     "mongodb": "^6.9.0",
-    "mongoose": "^8.6.3",
+    "mongoose": "^8.7.2",
     "next": "14.2.13",
     "next-auth": "^4.24.8",
     "react": "^18",
